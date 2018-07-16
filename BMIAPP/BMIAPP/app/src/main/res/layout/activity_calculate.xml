@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".calculate">
 
     <TableLayout
         android:layout_width="match_parent"
@@ -15,13 +15,12 @@
             android:layout_height="match_parent" >
 
             <EditText
-                android:id="@+id/Name"
-                android:layout_width="260dp"
+                android:id="@+id/textHeight"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Name" />
-
+                android:inputType="numberDecimal"
+                android:text="Input Height" />
         </TableRow>
 
         <TableRow
@@ -29,53 +28,40 @@
             android:layout_height="match_parent" >
 
             <EditText
-                android:id="@+id/DOB"
+                android:id="@+id/textWeight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="date"
-                android:text="Date of Birth" />
+                android:inputType="numberDecimal"
+                android:text="Input Weight" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
-
-            <EditText
-                android:id="@+id/HealthCard"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="number"
-                android:text="Health Card Number" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPassword"
-                android:text="Password" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/button2"
-                android:layout_width="365dp"
+                android:id="@+id/button"
+                android:layout_width="363dp"
                 android:layout_height="wrap_content"
-                android:onClick="onClickEnter"
-                android:text="Submit" />
+                android:onClick="calculate"
+                android:text="Calculate" />
         </TableRow>
-    </TableLayout>
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <EditText
+                android:id="@+id/resultText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableLayout>
 </android.support.constraint.ConstraintLayout>
