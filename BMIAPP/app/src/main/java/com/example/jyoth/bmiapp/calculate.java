@@ -35,6 +35,4 @@ public class calculate extends AppCompatActivity {
 
         result.setText(calc.toString());
     }
-
-
 }

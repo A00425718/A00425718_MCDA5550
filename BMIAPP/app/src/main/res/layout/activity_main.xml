@@ -15,7 +15,7 @@
             android:layout_height="match_parent" >
 
             <EditText
-                android:id="@+id/Name"
+                android:id="@+id/editText4"
                 android:layout_width="260dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -29,7 +29,7 @@
             android:layout_height="match_parent" >
 
             <EditText
-                android:id="@+id/DOB"
+                android:id="@+id/editText7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -42,7 +42,7 @@
             android:layout_height="match_parent" >
 
             <EditText
-                android:id="@+id/HealthCard"
+                android:id="@+id/editText8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -56,7 +56,7 @@
             android:layout_height="match_parent" >
 
             <EditText
-                android:id="@+id/password"
+                android:id="@+id/editText10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
