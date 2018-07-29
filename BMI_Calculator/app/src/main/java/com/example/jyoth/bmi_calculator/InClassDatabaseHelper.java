@@ -6,8 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.Date;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 public class InClassDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "inclass";  // name of the DB
@@ -31,11 +34,14 @@ public class InClassDatabaseHelper extends SQLiteOpenHelper {
                 + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "HEIGHT DOUBLE, "
                 + "WEIGHT DOUBLE, "   // Never store passwords in clear text in real apps
-                + "BMIRESULT DOUBLE);");
+                + "BMIRESULT DOUBLE,"
+                + "BMILABEL TEXT,"
+                + "DATE INTEGER);");
+
     }
 
 
-    public  void savePersonData(String name ,String password, String healthCardNumber, String date ){
+    public  boolean savePersonData(String name ,String password, String healthCardNumber, String date ){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues personValues= new ContentValues();
         personValues.put("NAME", name);
@@ -44,17 +50,24 @@ public class InClassDatabaseHelper extends SQLiteOpenHelper {
         personValues.put("HEALTH_CARD_NUMB", healthCardNumber);
 
         db.insert(TABLE_NAME,null, personValues);
+        return true;
 
-        db.close();
     }
 
-    public  void saveBMIData(Double height ,Double weight,Double BMIResult ){
+    public  void saveBMIData(Double height ,Double weight,Double BMIResult, String bmiLabel){
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues bmiValues = new ContentValues();
+      //  bmiValues.put("personID", currentUserId);
         bmiValues.put("HEIGHT", height);
         bmiValues.put("WEIGHT", weight);
         bmiValues.put("BMIRESULT", BMIResult);
+        bmiValues.put("BMILABEL", bmiLabel);
+        Date today = new Date();
+        bmiValues.put("DATE", today.getTime());
+
+
+
         db.insert(TABLE_NAME1,null, bmiValues);
         db.close();
     }
@@ -72,6 +85,7 @@ public class InClassDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+
     public boolean updateData(String id,String name,String password,String date,String healthCardNumber){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues personValues= new ContentValues();
@@ -83,6 +97,15 @@ public class InClassDatabaseHelper extends SQLiteOpenHelper {
         db.update(TABLE_NAME,personValues,"_id = ?", new String[] { id});
         return true;
     }
+
+    public Cursor getAllBMIData() {
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor res1;
+        res1 = db.rawQuery("select * from " + TABLE_NAME1, null);
+        return res1;
+
+    }
+
 
 
 }

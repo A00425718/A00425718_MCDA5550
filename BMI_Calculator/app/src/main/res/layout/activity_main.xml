@@ -137,11 +137,31 @@
             android:layout_height="match_parent" >
 
             <Button
+                android:id="@+id/buttonsearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="ViewsearchClicked"
+                android:text="Search" />
+
+            <Button
                 android:id="@+id/button_update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onClick"
                 android:text="Update" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <Button
+                android:id="@+id/buttondelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="ViewdeleteClicked"
+                android:text="Delete" />
         </TableRow>
 
     </TableLayout>

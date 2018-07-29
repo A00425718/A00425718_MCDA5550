@@ -19,6 +19,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static com.example.jyoth.bmi_calculator.InClassDatabaseHelper.TABLE_NAME;
+
 public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     private DatePickerDialog datePickerDialog;
@@ -33,7 +35,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     Button SubmitButton;
     Button btnviewAll;
     Button btnviewUpdate;
+    Button btnselect;
+    Button btndelete;
+    String select;
 
+    private static int CURRENT_USER = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +55,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         SubmitButton = (Button) findViewById(R.id.buttonSubmit);
         btnviewAll = (Button)findViewById(R.id.button222);
         btnviewUpdate = (Button)findViewById(R.id.button_update);
+        btnselect = (Button)findViewById(R.id.buttonsearch);
+        btndelete = (Button)findViewById(R.id.buttondelete);
+
 
         resultDateofBirth.setOnClickListener(this);
         SubmitButton.setOnClickListener(this);
+
+       // btnselect.setOnClickListener(this);
+      //  btndelete.setOnClickListener(this);
 
         simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
@@ -60,18 +72,19 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         SQLiteDatabase db= helper.getWritableDatabase();
 
         // run a query
-        Cursor cursor = db.query(InClassDatabaseHelper.TABLE_NAME,new String[]
-                        {"NAME","PASSWORD","DATE", "HEALTH_CARD_NUMB"},
+        Cursor cursor = db.query(TABLE_NAME,new String[]
+                        {"_id","NAME","PASSWORD","DATE", "HEALTH_CARD_NUMB"},
                 null,null,null,null,null);
         if (cursor.moveToFirst()){
             Log.d("Cursor", String.valueOf(cursor.getCount()));
 
-            String name = cursor.getString(0);
-            String password = cursor.getString(1);
-            String date = cursor.getString(2);
-            String healthCardNumber = cursor.getString(3);
+            CURRENT_USER = cursor.getInt(0);
+            String name = cursor.getString(1);
+            String password = cursor.getString(2);
+            String date = cursor.getString(3);
+            String healthCardNumber = cursor.getString(4);
 
-           // resultid.setText(id);
+            //resultid.setText(id);
             resultName.setText(name);
             resultPassword.setText(password);
             resultDateofBirth.setText(date.toString());
@@ -92,12 +105,45 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 new OnClickListener(){
                     @Override
                     public void onClick(View v){
-                        boolean isUpdate = helper.updateData(resultid.getText().toString(),resultName.getText().toString(),
-                                resultPassword.getText().toString(),resultDateofBirth.getText().toString(),resultHealthCardNumber.getText().toString());
-                        if(isUpdate == true)
-                            Toast.makeText(MainActivity.this,"Data Update",Toast.LENGTH_LONG).show();
-                        else
-                            Toast.makeText(MainActivity.this, "Data not Updated", Toast.LENGTH_SHORT).show();
+                        //boolean isUpdate = helper.updateData(resultid.getText().toString(),resultName.getText().toString(),
+                        //        resultPassword.getText().toString(),resultDateofBirth.getText().toString(),resultHealthCardNumber.getText().toString());
+
+                        select = resultid.getText().toString();
+                        if(select.equals(""))
+                        {
+                            Toast.makeText(MainActivity.this,"Please Enter Valid User Id",Toast.LENGTH_LONG).show();
+                            return;
+
+                        }
+
+                        SQLiteDatabase db = helper.getWritableDatabase();
+                        Cursor res = db.rawQuery("select * from " + TABLE_NAME + " where _id ='"+ select + "'",null);
+                        if(res.moveToFirst())
+                        {
+                            if (resultName.equals("")||resultPassword.equals("")||resultDateofBirth.equals("")||resultHealthCardNumber.equals("")){
+                                Toast.makeText(MainActivity.this,"Fields cannot be empty",Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            else{
+                                boolean isUpdate = helper.updateData(resultid.getText().toString(),resultName.getText().toString(),
+                                        resultPassword.getText().toString(),resultDateofBirth.getText().toString(),resultHealthCardNumber.getText().toString());
+                                try {
+                                    Intent myintent = new Intent(MainActivity.this,calculate.class);
+                                    Bundle b = new Bundle();
+                                    b.putString("Update", String.valueOf(isUpdate));
+                                    myintent.putExtras(b);
+                                    startActivity(myintent);
+                                }catch (Exception ex) {
+                                    String s = ex.getMessage();
+                                }
+                                if(isUpdate == true)
+                                    Toast.makeText(MainActivity.this,"Data Update",Toast.LENGTH_LONG).show();
+                                else
+                                    Toast.makeText(MainActivity.this, "Data not Updated", Toast.LENGTH_SHORT).show();
+
+
+                            }
+                        }
 
                     }
                 }
@@ -137,16 +183,37 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                     String password = resultPassword.getText().toString();
                     String healthCardNumber = resultHealthCardNumber.getText().toString();
                     String dateOfBirth = resultDateofBirth.getText().toString();
-                    helper.savePersonData(name,password,healthCardNumber,dateOfBirth);
-                    try {
-                        Intent intent = new Intent(this, calculate.class);
-                        startActivity(intent);
-                    }catch (Exception ex) {
-                        String s = ex.getMessage();
+                    if (name.equals("")||password.equals("")||healthCardNumber.equals("")||dateOfBirth.equals("")){
+                        Toast.makeText(this,"Fields cannot be empty",Toast.LENGTH_SHORT).show();
+                        return;
                     }
+                    else {
+                        boolean submit = helper.savePersonData(name, password, healthCardNumber, dateOfBirth);
 
+
+                        try {
+                            Intent myintent = new Intent(MainActivity.this,calculate.class);
+                            Bundle b = new Bundle();
+                            b.putString("Submit", String.valueOf(submit));
+                            myintent.putExtras(b);
+                            startActivity(myintent);
+                        }catch (Exception ex) {
+                            String s = ex.getMessage();
+                        }
+
+                        if(submit == true)
+                            Toast.makeText(MainActivity.this,"Data Update",Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(MainActivity.this, "Data not Updated", Toast.LENGTH_SHORT).show();
+
+
+
+
+
+                    }
                     break;
-            }
+
+                     }
 
         }
 
@@ -205,5 +272,60 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             builder.setMessage(message);
             builder.show();
         }
+
+    public void ViewsearchClicked(View v){
+        select = resultid.getText().toString();
+        if(btnselect.equals("")){
+            Toast.makeText(this,"Enter Name",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else{
+            SQLiteDatabase db = helper.getWritableDatabase();
+            Cursor res = db.rawQuery("select * from " + TABLE_NAME + " where _id ='"+ select + "'",null);
+
+            if(res.moveToFirst())
+            {
+                resultName.setText(res.getString(1));
+                resultPassword.setText(res.getString(2));
+                resultDateofBirth.setText(res.getString(3));
+                resultHealthCardNumber.setText(res.getString(4));
+                try {
+                    Intent intent = new Intent(this, calculate.class);
+                    startActivity(intent);
+                } catch (Exception ex) {
+                    String s = ex.getMessage();
+                }
+            }
+            else
+            {
+                Toast.makeText(this,"Data Not Found",Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
+
+    public void ViewdeleteClicked(View v){
+        select = resultid.getText().toString();
+        if(btndelete.equals("")){
+            Toast.makeText(this,"Enter ID to delete",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else{
+            SQLiteDatabase db = helper.getWritableDatabase();
+            Cursor res = db.rawQuery("select * from " + TABLE_NAME + " where _id ='"+ select + "'",null);
+
+            if(res.moveToFirst())
+            {
+                db.execSQL("Delete * from " + TABLE_NAME + " where _id ='"+ select+ "'",null);
+            }
+            else
+            {
+                Toast.makeText(this,"Data Not Found",Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
 
 }
