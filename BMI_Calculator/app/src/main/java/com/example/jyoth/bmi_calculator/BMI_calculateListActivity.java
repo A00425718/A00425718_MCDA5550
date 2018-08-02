@@ -1,73 +1,50 @@
 package com.example.jyoth.bmi_calculator;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
-public class BMI_calculateListActivity extends ListActivity {
+import java.util.ArrayList;
 
-    BMIResult[] results = {new BMIResult(5.5, 100), new BMIResult(4.3, 156)};
+public class BMI_calculateListActivity extends AppCompatActivity {
+
+    private int currentUserId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bmilist);
 
-        ListView listBMIResults = getListView();
-        ArrayAdapter<BMIResult> listAdapter = new ArrayAdapter<BMIResult>(this,
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            currentUserId = b.getInt("current_user");
+        }
 
-                android.R.layout.simple_list_item_1,
-                results
-        );
+        // instantiate the db helper class
+        InClassDatabaseHelper helper = new InClassDatabaseHelper(this);
 
-        listBMIResults.setAdapter(listAdapter);
+        ArrayList<DisplayBMI> results = helper.getBMIResultsByPersonId(currentUserId);
 
+        if (results.size() != 0) {
+            ListView bmiResultsList = (ListView)findViewById(R.id.bmi_history_list);
+
+            BMIListAdapter listAdapter = new BMIListAdapter(this, 0, results);
+
+            bmiResultsList.setAdapter(listAdapter);
+        }
+        else {
+            Toast.makeText(this, "No BMI results to show", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
-    //Add to Activity on CLick
-    public  void onListItemClick(ListView listView, View itemView , int position , long id)
-    {
-        System.out.println("Clicked on" + results[position].toString());
+    public void onListItemClick(ListView listView, View itemView, int position, long id) {
+
     }
 
-    public  class  BMIResult {
-        private double height = 1;
-        private  double weight = 1;
-        // TO do add the Date
-
-        public  BMIResult(double height , double weight ){
-            this.height = height;
-            this.weight = weight;
-        }
-
-        public  double getHeight(){
-            return  height;
-        }
-        public  void  setHeight (double height){
-            this.height = height;
-        }
-
-        public  double getWeight(){
-            return  weight;
-        }
-        public  void  setWeight (double weight){
-            this.weight = weight;
-        }
-
-
-        public  double getResult(){
-            return  weight/(height*height);
-        }
-
-        @Override
-        public String toString() {
-            return String.valueOf(getResult());
-        }
-
-        public BMIResult(){
-
-        }
-    }
 }

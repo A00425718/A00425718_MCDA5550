@@ -99,7 +99,7 @@
                 android:id="@+id/buttonBMIview"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:onClick="ViewAllBMIClicked"
+                android:onClick="onHistoryClick"
                 android:text="ViewBMIdata" />
 
         </TableRow>
