@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         }
 
 
-        CURRENT_USER = b.getInt("current_user");
+      //  CURRENT_USER = b.getInt("current_user");
         // run a query
         Cursor cursor = db.query(TABLE_NAME,new String[]
                         {"_id","NAME","PASSWORD","DATE", "HEALTH_CARD_NUMB"},
